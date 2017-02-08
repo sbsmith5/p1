@@ -19,7 +19,7 @@
 
 import java.io.File;
 import java.io.FileNotFoundException;
-
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -36,12 +36,10 @@ import java.util.Scanner;
 public class GradeEstimator {
 
 	private ScoreList scores;
-	
-//	private static String letterGrades;
-//	private static String threshHolds;
-//	private static String categoryNames;
-//	private static String categoryWeights;
-	
+	private ArrayList<String> letters = new ArrayList<String>();
+	private ArrayList<Double> thresholds = new ArrayList<Double>();
+	private ArrayList<String> assignmentNames = new ArrayList<String>();
+	private ArrayList<Double> assignmentWeight = new ArrayList<Double>();
 
 	/**
 	 * This method creates a new instance of the GradeEstimator class, using the
@@ -66,65 +64,44 @@ public class GradeEstimator {
 	public static GradeEstimator createGradeEstimatorFromFile(String gradeInfo)
 			throws FileNotFoundException, GradeFileFormatException {
 
-		if (!gradeInfo.contains(".txt")) {
-			throw new GradeFileFormatException();
-		}
+		GradeEstimator g1 = new GradeEstimator();
 
-		File folder = new File(".");
-		boolean foundFile = false;
+		// if (!gradeInfo.contains(".txt")) {
+		// throw new GradeFileFormatException();
+		// }
+		// File folder = new File(".");
+		// boolean foundFile = false;
+		// foundFile = true;
 
-		File gradeInfoFile = null;
-		for (File file : folder.listFiles()) {
-			if (file.getName() == gradeInfo) {
-				gradeInfoFile = file;
-				foundFile = true;
-			
-				Scanner scnr;
-				scnr = new Scanner(gradeInfoFile);
-				
-//				 letterGrades = scnr.nextLine();
-//				  threshHolds = scnr.nextLine();
-//				  categoryNames = scnr.nextLine();
-//				  categoryWeights = scnr.nextLine();
-//
-//				
-//				
-//				
-//				
-				
-				
-				
-				
-				
-				scnr.close();
-				
-				
-				
+		Scanner scnr;
+		scnr = new Scanner(gradeInfo);
+
+		String storedLine;
+
+		for (int i = 0; i < 4; i++) {
+			storedLine = scnr.nextLine();
+			if (storedLine.contains("#")) {
+				storedLine = storedLine.substring(0, storedLine.indexOf('#'));
 			}
-		}
-		if (foundFile == false)
-			throw new FileNotFoundException();
-		
-//
-//		String test = "";
-//		// scanner object for the reading through the file
-//		Scanner scnr;
-//		// the name in the line of the file
-//		String name = "";
-//		// the address in the line of file
-//		String address = "";
-//
-//		
-//		scnr = new Scanner(gradeInfoFile);
-//
-//		test = scnr.nextLine();
-//
-//		
-//		scnr.close();
+			storedLine = storedLine.trim();
 
-		return null;
+			do {
+				if (storedLine.contains(" ")) {
+					g1.letters.add(storedLine.substring(0, storedLine.indexOf(' ')));
+					storedLine = storedLine.substring(storedLine.indexOf(' ') + 1);
+					if (storedLine.charAt(0) == ' ')
+						throw new GradeFileFormatException();
+				} else {
+					g1.letters.add(storedLine.substring(0));
+				}
+			} while (storedLine.length() > 0 && i == 0);
+		}
+
+
+		return g1;
 
 	}
+	
 
 	/**
 	 * This method constructs a String to display the weighted percentage and
@@ -161,15 +138,20 @@ public class GradeEstimator {
 	}
 
 	public static void main(String[] args) {
-
+		;
 		if (args.length != 1) {
 			System.out.println(Config.USAGE_MESSAGE);
 		}
+		
+		// Testing with the config file
+		
+		args[0] = Config.GRADE_INFO_FILE_FORMAT_EXAMPLE;
+		
 		try {
-			String fileName = args[0];
-			GradeEstimator g1 = GradeEstimator.createGradeEstimatorFromFile(fileName);
+			createGradeEstimatorFromFile(args[0]);
+			
 		} catch (GradeFileFormatException e) {
-			System.out.println("Please enter a file name ending in .txt.");
+			System.out.println("GradeFileFormatException ");
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found.");
 		}
