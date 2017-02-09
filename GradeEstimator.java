@@ -110,7 +110,7 @@ public class GradeEstimator {
 			throws FileNotFoundException, GradeFileFormatException {
 
 		ArrayList<String> fileArray;
-		ScoreList scores;
+		ScoreList scores = new ScoreList();
 		
 		if (!gradeInfo.endsWith(".txt")) {
 			throw new GradeFileFormatException();
@@ -192,7 +192,7 @@ public class GradeEstimator {
 		double overallScore;
 		double temp;
 		double weightedTotal = 0;
-		int counter;
+		int counter = 0;
 		
 		for(int t = 0; t < categories.length; t++){
 			
@@ -239,8 +239,8 @@ public class GradeEstimator {
 	
 	private double getCategoryScore(String category){
 		
-		double score;
-		int count;
+		double score = 0;
+		int count = 0;
 		
 		ScoreIterator itr = new ScoreIterator(listOfScores);
 		
@@ -271,11 +271,14 @@ public class GradeEstimator {
 			String fileName = args[0];
 			GradeEstimator g1 = GradeEstimator
 					.createGradeEstimatorFromFile(fileName);
+			System.out.print(g1.getEstimateReport());
 		} catch (GradeFileFormatException e) {
 			System.out.println("Please enter a file name ending in .txt.");
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found.");
 		}
+		
+		;
 
 	}
 
