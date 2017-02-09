@@ -23,7 +23,7 @@
  */
 public class ScoreList implements ScoreListADT{
 	
-	private int numItems; // the number of scores that has been added to the list
+	private int numItems=0; // the number of scores that has been added to the list
 	private Score[] scores = new Score[10]; //an array of the sores in ScoreList
 	
 	/**
@@ -44,6 +44,7 @@ public class ScoreList implements ScoreListADT{
 	 */
 	public void add(Score s) throws IllegalArgumentException {
 		if (s == null) throw new IllegalArgumentException();
+		
 		scores[numItems] = s;
 		numItems++;
 		if (numItems == scores.length) {
