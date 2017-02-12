@@ -175,6 +175,14 @@ public class GradeEstimator {
 	 * @return (description of the return value)
 	 */
 	public String getEstimateReport() {
+		for(int i=0;i<categories.length;i++){
+			ScoreIterator itr = new ScoreIterator(scores, categories[i].substring(0, 1));
+			while(itr.hasNext()){
+				Score temp = itr.next();
+				System.out.print(temp.getName() + "\t" + String.format("%7.2f", temp.getPercent()) + "\n");
+			}
+		}
+		
 		String estimateReport = "Grade Estimate is based on " + scores.size() + " scores \n";
 		double entireAverage = 0.0;
 		for(int i=0;i<categories.length;i++){
@@ -182,15 +190,16 @@ public class GradeEstimator {
 			int scoreCount = 0;
 			ScoreIterator itr = new ScoreIterator(scores, categories[i].substring(0, 1));
 			while(itr.hasNext()){
-				averageScore = itr.next().getPercent();
+				averageScore += itr.next().getPercent();
 				scoreCount++;
 			}
 			double average = averageScore/scoreCount;
 			entireAverage+=(average*(weights[i])/100);
-			estimateReport = estimateReport	+ ((average*(weights[i]))/100) + "% ="+ average + "% *"+ weights[i];
-			estimateReport = estimateReport + String.format("%7.2f", entireAverage);
-		}
+			estimateReport = estimateReport + "\t" + String.format("%7.2f", entireAverage);
+			estimateReport = estimateReport	+ "% = "+ average + "% *"+ weights[i] + "\n";
 		
+		}
+		estimateReport += "--------------------------------";
 		 return estimateReport;
 		 
 		}
