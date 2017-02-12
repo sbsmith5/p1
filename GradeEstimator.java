@@ -1,4 +1,3 @@
-
 /////////////////////////////////////////////////////////////////////////////
 //Semester:         CS367 Spring 2016 
 //PROJECT:          p1
@@ -6,7 +5,7 @@
 //
 //Authors: Sid Smith | sbsmith5@wisc.edu | sbsmith5 | 001
 //Author1: (Michael Osmian,Osmian@wisc.edu,osmian,001)
-//Author2: (name2,email2,netID2,lecture number2)
+//Author2: (Aleysha Becker ,ambecker5@wisc.edu , ambecker5,001)
 //
 //---------------- OTHER ASSISTANCE CREDITS 
 //Persons: Identify persons by name, relationship to you, and email. 
@@ -207,11 +206,17 @@ public class GradeEstimator {
 		}
 		estimateReport = estimateReport + "--------------------------------\n";
 		estimateReport = estimateReport + String.format("%7.2f",entireAverage) + "% weighted percent\n";
-		for(int j=0;j<thresholds.length;j++){
-			if(entireAverage>=thresholds[j]){
-				estimateReport = estimateReport + "Letter Grade Estimate: " + letterGrades[j];
-				break;
+		boolean gotLetter = false;
+		while (!gotLetter) {
+			for(int j=0;j<thresholds.length;j++){
+				if(entireAverage>=thresholds[j]){
+					estimateReport = estimateReport + "Letter Grade Estimate: " + letterGrades[j];
+					gotLetter = true;
+					break;
+				}
 			}
+			estimateReport += "Letter Grade Estimate: unable to estimate letter grade for " + entireAverage;
+			break;
 		}
 		
 		
