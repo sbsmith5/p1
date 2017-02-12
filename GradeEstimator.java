@@ -1,3 +1,4 @@
+
 /////////////////////////////////////////////////////////////////////////////
 //Semester:         CS367 Spring 2016 
 //PROJECT:          p1
@@ -34,55 +35,16 @@ import java.util.Scanner;
  */
 public class GradeEstimator {
 
-	private ScoreList listOfScores;
-	//private String[] boundaries;
-	
+	private ScoreList scores = new ScoreList();
+	// private String[] boundaries;
+	private ScoreIterator[] categoryIterators;
 	private String[] letterGrades;
-	private double[] boundaries;
+	private String[] boundaries;
+	private double[] thresholds;
 	private String[] categories;
-	private double[] categoryWeights;
+	private String[] categoryWeights;
+	private double[] weights;
 
-	private GradeEstimator(ScoreList listOfScores, String[] cutOffs){
-		
-		this.listOfScores = listOfScores;
-		
-		 letterGrades = cutOffs[0].split(" ");
-		 
-		 ////////////
-		 this.boundaries= new double[cutOffs[1].split(" ").length];
-		 
-		 int m=0;
-		 for(String i: cutOffs[1].split(" ")){
-			 this.boundaries[m] = Double.parseDouble(i);
-			 m++;
-		 }
-		 /////////////
-		 
-		 
-		 ////////////
-		 this.categories= new String[cutOffs[2].split(" ").length];
-		 
-		 int p=0;
-		 for(String i: cutOffs[2].split(" ")){
-			 this.boundaries[p] = i.charAt(0);
-			 m++;
-		 }
-		 /////////////
-		 
-		 ////////////
-		 categoryWeights= new double[cutOffs[3].split(" ").length];
-		 
-		 m=0;
-		 for(String i: cutOffs[3].split(" ")){
-			 this.boundaries[m] = Double.parseDouble(i);
-			 m++;
-		 }
-		 /////////////
-		
-	}
-	
-	
-	
 	// private static String letterGrades;
 	// private static String threshHolds;
 	// private static String categoryNames;
@@ -102,16 +64,17 @@ public class GradeEstimator {
 	 * 
 	 * POSTCONDITIONS: (i.e. the incoming list has been reordered)
 	 * 
-	 * @param (parameter name) (Describe the first parameter here)
-	 * @param (parameter name) (Do the same for each additional parameter)
+	 * @param (parameter
+	 *            name) (Describe the first parameter here)
+	 * @param (parameter
+	 *            name) (Do the same for each additional parameter)
 	 * @return (description of the return value)
 	 */
 	public static GradeEstimator createGradeEstimatorFromFile(String gradeInfo)
 			throws FileNotFoundException, GradeFileFormatException {
 
-		ArrayList<String> fileArray;
-		ScoreList scores = new ScoreList();
-		
+		GradeEstimator g1 = new GradeEstimator();
+
 		if (!gradeInfo.endsWith(".txt")) {
 			throw new GradeFileFormatException();
 		}
@@ -119,49 +82,83 @@ public class GradeEstimator {
 		File folder = new File(".");
 		boolean foundFile = false;
 
-		fileArray = new ArrayList<String>();
-		
-		String[] cutOffs = new String[3];
-		
 		File gradeInfoFile = null;
 		for (File file : folder.listFiles()) {
-			if (file.getName().equals(gradeInfo)) {
-				gradeInfoFile = file;
-				foundFile = true;
 
+			if (file.getName().equals(gradeInfo)) {
+
+				gradeInfoFile = file;
+
+				foundFile = true;
+				String temp;
 				Scanner scnr;
 				scnr = new Scanner(gradeInfoFile);
 
-				while(scnr.hasNextLine()){
-					
-					fileArray.add(scnr.nextLine());
+				// The first four lines of the file are assigned to indiviudual
+				// arrays
 
+				temp = g1.trimLines(scnr.nextLine());
+				g1.letterGrades = temp.split(" ");
+				temp = g1.trimLines(scnr.nextLine());
+
+				g1.boundaries = temp.split(" ");
+				g1.thresholds = new double[g1.boundaries.length];
+
+				for (int i = 0; i < g1.boundaries.length; i++) {
+
+					g1.thresholds[i] = Double.valueOf(g1.boundaries[i]);
+
+				}
+				temp = g1.trimLines(scnr.nextLine());
+				g1.categories = temp.split(" ");
+				temp = g1.trimLines(scnr.nextLine());
+				g1.categoryWeights = temp.split(" ");
+				g1.weights = new double[g1.categoryWeights.length];
+				for (int i = 0; i < g1.categoryWeights.length; i++) {
+					g1.weights[i] = Double.valueOf(g1.categoryWeights[i]);
+
+				}
+
+				String n;
+				double pE;
+				double pP;
+				String[] remLines;
+
+				while (scnr.hasNextLine()) {
+					temp = g1.trimLines(scnr.nextLine());
+					remLines = temp.split(" ");
+
+					n = remLines[0];
+					pE = Double.valueOf(remLines[1]);
+					pP = Double.valueOf(remLines[2]);
+					g1.scores.add(new Score(n, pE, pP));
 				}
 
 				scnr.close();
-				
-				
-				
-				for(int i=4; i < fileArray.size(); i++){
-					
-					cutOffs = fileArray.get(i).split(" ");
-					scores.add(new Score(cutOffs[0], 
-							(double) Double.parseDouble(cutOffs[1]), 
-							(double) Double.parseDouble(cutOffs[2])));
-				}
-				
+
 				break;
+			} else {
+				foundFile = false;
 			}
 		}
-		if (!foundFile)
+
+		if (foundFile == false) {
 			throw new FileNotFoundException();
-		
-		return new GradeEstimator(scores, cutOffs);
+		}
+
+		return g1;
 
 	}
-	
 
-	
+	private String trimLines(String Line) {
+		if (Line.contains("#")) {
+			Line = Line.substring(0, Line.indexOf('#'));
+		}
+		Line = Line.trim();
+
+		return Line;
+
+	}
 
 	/**
 	 * This method constructs a String to display the weighted percentage and
@@ -171,96 +168,73 @@ public class GradeEstimator {
 	 * 
 	 * POSTCONDITIONS: (i.e. the incoming list has been reordered)
 	 * 
-	 * @param (parameter name) (Describe the first parameter here)
-	 * @param (parameter name) (Do the same for each additional parameter)
+	 * @param (parameter
+	 *            name) (Describe the first parameter here)
+	 * @param (parameter
+	 *            name) (Do the same for each additional parameter)
 	 * @return (description of the return value)
 	 */
 	public String getEstimateReport() {
-
-		String toReturn = "";
-		
-		ScoreIterator itr = new ScoreIterator(listOfScores);
-		
-		while(itr.hasNext()){
-			Score temp;
-			temp = itr.next();
-			toReturn += temp.getName() + "\t" + temp.getPercent() + "\n";
-		}
-		
-		toReturn += "Grade estimate is based on " + listOfScores.size() + " scores.\n";
-		
-		double overallScore;
-		double temp;
-		double weightedTotal = 0;
-		int counter = 0;
-		
-		for(int t = 0; t < categories.length; t++){
-			
-			temp = getCategoryScore(categories[t])/100;
-			
-			weightedTotal += temp;
-			
-			toReturn += (categoryWeights[t] * temp/100) + "% = " + 
-			temp + "% * " +categoryWeights[t] +"% for " + categories[t] +"\n";
-			counter++;
-		}
-		
-		toReturn += "-------------------------------- \n\t";
-		
-		toReturn += weightedTotal/counter + "% weighted percent\n";
-		
-		toReturn += "Letter Grade Estimate: ";
-		
-		for(int a = 0; a < boundaries.length; a++){
-			if(weightedTotal/counter > boundaries[a]){
-				toReturn += letterGrades[a];
-				break;
+		String estimateReport = "Grade Estimate is based on " + scores.size() + " scores \n";
+		double entireAverage = 0.0;
+		for(int i=0;i<categories.length;i++){
+			double averageScore = 0.0;
+			int scoreCount = 0;
+			ScoreIterator itr = new ScoreIterator(scores, categories[i].substring(0, 1));
+			while(itr.hasNext()){
+				averageScore = itr.next().getPercent();
+				scoreCount++;
 			}
+			double average = averageScore/scoreCount;
+			entireAverage+=(average*(weights[i])/100);
+			estimateReport = estimateReport	+ ((average*(weights[i]))/100) + "% ="+ average + "% *"+ weights[i];
+			estimateReport = estimateReport + String.format("%7.2f", entireAverage);
 		}
 		
-		return toReturn;
-		// This method constructs a String to display the weighted
-		// percentage and letter grade estimates based on the input
-		// from the grade info file. The expected format, along with several
-		// input/output pair examples, is shown below. Brackets [ ] indicate
-		// a piece of information that your program will need to fill in.
-
-		// Do not print anything within this method. Return the String
-		// that you construct and let the main() method handle the printing.
-
-		// Note: If several assignments within a category have different
-		// maximum scores, they are still worth the same amount, so you will
-		// need to make some adjustments when calculating the correct average
-		// score. It may help to consider that we are asking for the average
-		// score for each category as a percent, or equivalently as a score out
-		// of 100 points.
-
-	}
-	
-	private double getCategoryScore(String category){
-		
-		double score = 0;
-		int count = 0;
-		
-		ScoreIterator itr = new ScoreIterator(listOfScores);
-		
-		while(itr.hasNext()){
-			Score temp;
-			
-			temp = itr.next();
-			
-			if(temp.getCategory().equals(category)){
-			
-				score += temp.getPercent();
-				count++;
-				
-			}
+		 return estimateReport;
+		 
 		}
-		
-		return score/count;
-		
-	}
+//		
+
 	
+
+//	private ScoreIterator[] getIterators() {
+//		categoryIterators = new ScoreIterator[categories.length];
+//		String temp;
+//
+//		for (int k = 0; k < categories.length; k++) {
+//			temp = categories[k];
+//			categoryIterators[k] = new ScoreIterator(scores, temp);
+//		}
+//
+//		return categoryIterators;
+//
+//	}
+
+	
+//	 private double getCategoryScore(String category) {
+//	
+//	 double score = 0;
+//	 int count = 0;
+//	
+//	 ScoreIterator itr = new ScoreIterator(scores);
+//	
+//	 while (itr.hasNext()) {
+//	 Score temp;
+//	
+//	 temp = itr.next();
+//	 System.out.println(temp.getPercent());
+//	 if (temp.getCategory().equals(category)) {
+//		
+//	 score += temp.getPercent();
+//	 count++;
+//	
+//	 }
+//	 }
+//	
+//	 return score / count;
+//	
+//	 }
 
 	public static void main(String[] args) {
 
@@ -269,15 +243,16 @@ public class GradeEstimator {
 		}
 		try {
 			String fileName = args[0];
-			GradeEstimator g1 = GradeEstimator
-					.createGradeEstimatorFromFile(fileName);
-			System.out.print(g1.getEstimateReport());
+
+			System.out.println(createGradeEstimatorFromFile(fileName).getEstimateReport());
+
+			// System.out.print(g1.getEstimateReport());
 		} catch (GradeFileFormatException e) {
 			System.out.println("Please enter a file name ending in .txt.");
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found.");
 		}
-		
+
 		;
 
 	}

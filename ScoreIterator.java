@@ -27,21 +27,32 @@ public class ScoreIterator implements ScoreIteratorADT<Score> {
 private ScoreList myList;
 //keeps track of the current position within the list
 private int currPos;
+
+private String category;
 	
-public ScoreIterator(ScoreList list){
+public ScoreIterator(ScoreList list, String category){
 	this.myList = list;
 	this.currPos = 0;
-	
+	this.category=category;
 }
 public Score next(){
+
 	if(!hasNext()) throw new NoSuchElementException();
-	
+	while(!myList.get(currPos).getCategory().equals(category.substring(0,1))){
+		currPos++;
+	}
 	//the result is the score at the iterator's position
 	Score result = myList.get(currPos);
 	//increments the iterator
 	currPos++;
-
+	while(currPos < myList.size()){
+		if(myList.get(currPos).getCategory().equals(category.substring(0,1))){
+			break;
+		}
+		currPos++;
+	}
 	return result;
+
 }
 	
 	public boolean hasNext(){
