@@ -26,6 +26,7 @@ import java.util.Scanner;
  * (Write a succinct description of this class here. You should avoid wordiness
  * and redundancy. If necessary, additional paragraphs should be preceded by
  * <p>
+ * 
  * , the html tag for a new paragraph.)
  * 
  * <p>
@@ -98,6 +99,9 @@ public class GradeEstimator {
 				// arrays
 
 				temp = g1.trimLines(scnr.nextLine());
+//				if(scnr.hasNextInt() || scnr.hasNextDouble()){
+//					throw new GradeFileFormatException();
+//				}
 				g1.letterGrades = temp.split(" ");
 				temp = g1.trimLines(scnr.nextLine());
 
@@ -109,6 +113,7 @@ public class GradeEstimator {
 					g1.thresholds[i] = Double.valueOf(g1.boundaries[i]);
 
 				}
+				
 				temp = g1.trimLines(scnr.nextLine());
 				g1.categories = temp.split(" ");
 				temp = g1.trimLines(scnr.nextLine());
@@ -116,7 +121,6 @@ public class GradeEstimator {
 				g1.weights = new double[g1.categoryWeights.length];
 				for (int i = 0; i < g1.categoryWeights.length; i++) {
 					g1.weights[i] = Double.valueOf(g1.categoryWeights[i]);
-
 				}
 
 				String n;
@@ -179,11 +183,11 @@ public class GradeEstimator {
 			ScoreIterator itr = new ScoreIterator(scores, categories[i].substring(0, 1));
 			while(itr.hasNext()){
 				Score temp = itr.next();
-				System.out.print(temp.getName() + "\t" + String.format("%7.2f", temp.getPercent()) + "\n");
+				System.out.print(temp.getName() + "  " + String.format("%7.2f", temp.getPercent()) + "\n");
 			}
 		}
-		
 		String estimateReport = "Grade Estimate is based on " + scores.size() + " scores \n";
+		
 		double entireAverage = 0.0;
 		for(int i=0;i<categories.length;i++){
 			double averageScore = 0.0;
@@ -194,12 +198,23 @@ public class GradeEstimator {
 				scoreCount++;
 			}
 			double average = averageScore/scoreCount;
+			
 			entireAverage+=(average*(weights[i])/100);
-			estimateReport = estimateReport + "\t" + String.format("%7.2f", entireAverage);
-			estimateReport = estimateReport	+ "% = "+ average + "% *"+ weights[i] + "\n";
 		
+			estimateReport = estimateReport	+ String.format("%7.2f",(((average*(weights[i]))/100)) ) + "% = "+ String.format("%7.2f", average)
+			+ "% of "+ String.format("%2.0f", weights[i])+"% for";
+			estimateReport = estimateReport +" " + categories[i] + "\n";
 		}
-		estimateReport += "--------------------------------";
+		estimateReport = estimateReport + "--------------------------------\n";
+		estimateReport = estimateReport + String.format("%7.2f",entireAverage) + "% weighted percent\n";
+		for(int j=0;j<thresholds.length;j++){
+			if(entireAverage>=thresholds[j]){
+				estimateReport = estimateReport + "Letter Grade Estimate: " + letterGrades[j];
+				break;
+			}
+		}
+		
+		
 		 return estimateReport;
 		 
 		}
