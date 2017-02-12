@@ -1,4 +1,17 @@
-
+/////////////////////////////////////////////////////////////////////////////
+// Semester:         CS367 Spring 2017 
+// PROJECT:          p0
+// FILE:             ScoreListADT.java
+//
+// Authors: Aleysha Becker
+// Author1: (Aleysha Becker, ambecker5@wisc.edu, ambecker5, lecture 1)
+// Author2: (Michael Osmian,osmian@wisc.edu,001)
+//
+// ---------------- OTHER ASSISTANCE CREDITS 
+// Persons: NA
+// 
+// Online sources: NA
+//////////////////////////// 80 columns wide //////////////////////////////////
 /** 
  * A container that stores references to instances of Score in a 
  * contiguous and ordered list of those instances.

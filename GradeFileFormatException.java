@@ -1,15 +1,15 @@
 /////////////////////////////////////////////////////////////////////////////
 // Semester:         CS367 Spring 2017 
-// PROJECT:          p1
+// PROJECT:          p0
 // FILE:             GradeFileFormatException.java
 //
-// Authors: Michael Osmian, Aleysha Becker, Sidney Smith, Yuqi Wei, Vanessa Chavez,
-// Roberto O'dogherty)
+// Author1: (Aleysha Becker, ambecker5@wisc.edu, ambecker5, lecture 1)
+// Author2: (Michael Osmian,osmian@wisc.edu,001)
 //
 // ---------------- OTHER ASSISTANCE CREDITS 
-// Persons: N/A
+// Persons: NA
 // 
-// Online sources: N/A
+// Online sources: NA
 //////////////////////////// 80 columns wide //////////////////////////////////
 
 /**

@@ -1,19 +1,17 @@
+
 /////////////////////////////////////////////////////////////////////////////
 //Semester:         CS367 Spring 2016 
 //PROJECT:          p1
 //FILE:             GradeEstimator.java
 //
-//Authors: Sid Smith | sbsmith5@wisc.edu | sbsmith5 | 001
 //Author1: (Michael Osmian,Osmian@wisc.edu,osmian,001)
-//Author2: (Aleysha Becker ,ambecker5@wisc.edu , ambecker5,001)
+//Author2: (name2,email2,netID2,lecture number2)
+//Author3: (Aleysha Becker, ambecker5@wisc.edu, ambecker5, lecture 1)
 //
 //---------------- OTHER ASSISTANCE CREDITS 
-//Persons: Identify persons by name, relationship to you, and email. 
-//Describe in detail the the ideas and help they provided. 
+//Persons: N/A
 //
-//Online sources: avoid web searches to solve your problems, but if you do 
-//search, be sure to include Web URLs and description of 
-//of any information you find. 
+//Online sources: N/A
 ////////////////////////////80 columns wide //////////////////////////////////
 
 import java.io.File;
@@ -22,33 +20,30 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * (Write a succinct description of this class here. You should avoid wordiness
- * and redundancy. If necessary, additional paragraphs should be preceded by
- * <p>
+ * (This class creates a GradeEstimator instance and reads from a given text
+ * file. The values it reads in are grade information which is then used by this
+ * class to create an accurate grade estimate report.)
  * 
- * , the html tag for a new paragraph.)
  * 
- * <p>
- * Bugs: (a list of bugs and other problems)
  * 
- * @author Sid Smith
+ * @author Michael Osmian
  */
 public class GradeEstimator {
 
+	// The ScoreList which implements our ScoreListADT
 	private ScoreList scores = new ScoreList();
 	// private String[] boundaries;
-	private ScoreIterator[] categoryIterators;
 	private String[] letterGrades;
+	// Initial array of category thresholds of type string
 	private String[] boundaries;
+	// The array of thresholds taken from the initial array called boundaries
 	private double[] thresholds;
+	// The array of category names
 	private String[] categories;
+	// The array of category weights of type string
 	private String[] categoryWeights;
+	// The array of category weights of type double
 	private double[] weights;
-
-	// private static String letterGrades;
-	// private static String threshHolds;
-	// private static String categoryNames;
-	// private static String categoryWeights;
 
 	/**
 	 * This method creates a new instance of the GradeEstimator class, using the
@@ -60,64 +55,88 @@ public class GradeEstimator {
 	 * instance. The method returns a reference to the newly constructed
 	 * instance.
 	 * 
-	 * PRECONDITIONS: (i.e. the incoming list is assumed to be non-null)
-	 * 
-	 * POSTCONDITIONS: (i.e. the incoming list has been reordered)
-	 * 
-	 * @param (parameter
-	 *            name) (Describe the first parameter here)
-	 * @param (parameter
-	 *            name) (Do the same for each additional parameter)
-	 * @return (description of the return value)
+	 * @param (String
+	 *            gradeInfo) (The name of the file which is passed into the main
+	 *            method through the command line)
+	 * @return (GradeEstimator g1) (The instance of GradeEstimator)
 	 */
 	public static GradeEstimator createGradeEstimatorFromFile(String gradeInfo)
 			throws FileNotFoundException, GradeFileFormatException {
 
+		// Creates instance of the GradeEstimator class called g1
 		GradeEstimator g1 = new GradeEstimator();
 
+		// If the file name which was passed in does not end in .txt
 		if (!gradeInfo.endsWith(".txt")) {
 			throw new GradeFileFormatException();
 		}
 
+		// Creates a list of files within the current directory
 		File folder = new File(".");
 		boolean foundFile = false;
 
 		File gradeInfoFile = null;
+
+		// Iterates through the current directory to find one that matches the
+		// user's input for a filename
 		for (File file : folder.listFiles()) {
 
 			if (file.getName().equals(gradeInfo)) {
 
+				// When a match is found, it sets the found file to the one that
+				// matches the name
 				gradeInfoFile = file;
 
 				foundFile = true;
+
+				// This variable will continously change as the scanner reads
+				// every line
 				String temp;
 				Scanner scnr;
+
+				// Scanner is created that reads from a given file
 				scnr = new Scanner(gradeInfoFile);
+				if ( (scnr.hasNextDouble() || scnr.hasNextInt())) {
+					scnr.close();
+					throw new GradeFileFormatException();
+				}
 
-				// The first four lines of the file are assigned to indiviudual
-				// arrays
-
+				// This string is set to the trimmed version of the scanner's
+				// next line
 				temp = g1.trimLines(scnr.nextLine());
-//				if(scnr.hasNextInt() || scnr.hasNextDouble()){
-//					throw new GradeFileFormatException();
-//				}
+				if (! (scnr.hasNextDouble() || scnr.hasNextInt())) {
+					scnr.close();
+					throw new GradeFileFormatException();
+				}
+				// Splits this temp line into an array of strings, in this case
+				// the letters.
 				g1.letterGrades = temp.split(" ");
 				temp = g1.trimLines(scnr.nextLine());
 
+				// Creates an array of strings that contain the thresholds for
+				// each category
 				g1.boundaries = temp.split(" ");
+
+				// Sets the double array to the length of the array of strings
+				// containing boundaries
 				g1.thresholds = new double[g1.boundaries.length];
 
+				// This loop assigns the double value of each index in the array
+				// of boundaries to that of thresholds
 				for (int i = 0; i < g1.boundaries.length; i++) {
-
 					g1.thresholds[i] = Double.valueOf(g1.boundaries[i]);
-
 				}
-				
+				// temp now eauals the third line of the file which contains
+				// categories and sets it to an array of strings
 				temp = g1.trimLines(scnr.nextLine());
 				g1.categories = temp.split(" ");
+				// temp now eauls the array of category weights but it is of
+				// type string
 				temp = g1.trimLines(scnr.nextLine());
 				g1.categoryWeights = temp.split(" ");
 				g1.weights = new double[g1.categoryWeights.length];
+				// iterates through the array of strings of the weights and
+				// assigns the value to a new array of doubles
 				for (int i = 0; i < g1.categoryWeights.length; i++) {
 					g1.weights[i] = Double.valueOf(g1.categoryWeights[i]);
 				}
@@ -127,6 +146,9 @@ public class GradeEstimator {
 				double pP;
 				String[] remLines;
 
+				// Loops through the remainder of the file that contains all of
+				// the score information, and adds these new score instances to
+				// the list of scores
 				while (scnr.hasNextLine()) {
 					temp = g1.trimLines(scnr.nextLine());
 					remLines = temp.split(" ");
@@ -153,6 +175,15 @@ public class GradeEstimator {
 
 	}
 
+	/**
+	 * This method takes a string input which is the scanner's current line and
+	 * edits it to get rid of potential characters and extra spaces.
+	 * 
+	 * 
+	 * @param (String
+	 *            Line) (The line being passed in)
+	 * @return (String Line) (The trimmed and edited line)
+	 */
 	private String trimLines(String Line) {
 		if (Line.contains("#")) {
 			Line = Line.substring(0, Line.indexOf('#'));
@@ -167,104 +198,72 @@ public class GradeEstimator {
 	 * This method constructs a String to display the weighted percentage and
 	 * letter grade estimates based on the input from the grade info file.
 	 * 
-	 * PRECONDITIONS: (i.e. the incoming list is assumed to be non-null)
-	 * 
-	 * POSTCONDITIONS: (i.e. the incoming list has been reordered)
-	 * 
-	 * @param (parameter
-	 *            name) (Describe the first parameter here)
-	 * @param (parameter
-	 *            name) (Do the same for each additional parameter)
-	 * @return (description of the return value)
+	 * @return (String estimateReport) (The String which includes the entire
+	 *         estimateReport)
 	 */
 	public String getEstimateReport() {
-		for(int i=0;i<categories.length;i++){
+		// This loops through the list of categories and within each category it
+		// iterates through the scores and displays each Score's information
+		for (int i = 0; i < categories.length; i++) {
 			ScoreIterator itr = new ScoreIterator(scores, categories[i].substring(0, 1));
-			while(itr.hasNext()){
+			while (itr.hasNext()) {
 				Score temp = itr.next();
 				System.out.print(temp.getName() + "  " + String.format("%7.2f", temp.getPercent()) + "\n");
 			}
 		}
 		String estimateReport = "Grade Estimate is based on " + scores.size() + " scores \n";
-		
+		// The entire average of every score
 		double entireAverage = 0.0;
-		for(int i=0;i<categories.length;i++){
+
+		// This loops through the categories again and edits the estimatereport
+		// string along with it. The iterator pulls the percentages from every
+		// score and totals them all up so we can use this information within
+		// the loop and create the grade estimate report
+		for (int i = 0; i < categories.length; i++) {
 			double averageScore = 0.0;
 			int scoreCount = 0;
 			ScoreIterator itr = new ScoreIterator(scores, categories[i].substring(0, 1));
-			while(itr.hasNext()){
+			while (itr.hasNext()) {
 				averageScore += itr.next().getPercent();
 				scoreCount++;
 			}
-			double average = averageScore/scoreCount;
-			
-			entireAverage+=(average*(weights[i])/100);
-		
-			estimateReport = estimateReport	+ String.format("%7.2f",(((average*(weights[i]))/100)) ) + "% = "+ String.format("%7.2f", average)
-			+ "% of "+ String.format("%2.0f", weights[i])+"% for";
-			estimateReport = estimateReport +" " + categories[i] + "\n";
+			double average = averageScore / scoreCount;
+
+			entireAverage += (average * (weights[i]) / 100);
+
+			estimateReport = estimateReport + String.format("%7.2f", (((average * (weights[i])) / 100))) + "% = "
+					+ String.format("%7.2f", average) + "% of " + String.format("%2.0f", weights[i]) + "% for";
+			estimateReport = estimateReport + " " + categories[i] + "\n";
 		}
 		estimateReport = estimateReport + "--------------------------------\n";
-		estimateReport = estimateReport + String.format("%7.2f",entireAverage) + "% weighted percent\n";
-		boolean gotLetter = false;
-		while (!gotLetter) {
-			for(int j=0;j<thresholds.length;j++){
-				if(entireAverage>=thresholds[j]){
+		estimateReport = estimateReport + String.format("%7.2f", entireAverage) + "% weighted percent\n";
+		
+		boolean getLetter = false;
+		while (!getLetter) {
+			for (int j = 0; j < thresholds.length; j++) {
+				if(entireAverage >= thresholds[j]) {
 					estimateReport = estimateReport + "Letter Grade Estimate: " + letterGrades[j];
-					gotLetter = true;
+					getLetter = true;
 					break;
 				}
 			}
-			estimateReport += "Letter Grade Estimate: unable to estimate letter grade for " + entireAverage;
+			if (!getLetter) {
+				estimateReport += "Letter Grade Estimate: unable to estimate letter grade for " + entireAverage;
+			}
 			break;
 		}
-		
-		
-		 return estimateReport;
-		 
-		}
-//		
 
-	
+		return estimateReport;
 
-//	private ScoreIterator[] getIterators() {
-//		categoryIterators = new ScoreIterator[categories.length];
-//		String temp;
-//
-//		for (int k = 0; k < categories.length; k++) {
-//			temp = categories[k];
-//			categoryIterators[k] = new ScoreIterator(scores, temp);
-//		}
-//
-//		return categoryIterators;
-//
-//	}
+	}
 
-	
-//	 private double getCategoryScore(String category) {
-//	
-//	 double score = 0;
-//	 int count = 0;
-//	
-//	 ScoreIterator itr = new ScoreIterator(scores);
-//	
-//	 while (itr.hasNext()) {
-//	 Score temp;
-//	
-//	 temp = itr.next();
-//	 System.out.println(temp.getPercent());
-//	 if (temp.getCategory().equals(category)) {
-//		
-//	 score += temp.getPercent();
-//	 count++;
-//	
-//	 }
-//	 }
-//	
-//	 return score / count;
-//	
-//	 }
-
+	/**
+	 * This is the main method of the class, it calls two methods which read
+	 * from a file and create a grade estimate report from it as well.
+	 * 
+	 * @param (String[]
+	 *            args) (The file input)
+	 */
 	public static void main(String[] args) {
 
 		if (args.length != 1) {
@@ -275,14 +274,11 @@ public class GradeEstimator {
 
 			System.out.println(createGradeEstimatorFromFile(fileName).getEstimateReport());
 
-			// System.out.print(g1.getEstimateReport());
 		} catch (GradeFileFormatException e) {
-			System.out.println("Please enter a file name ending in .txt.");
+			System.out.println("GradeFileFormatException");
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found.");
 		}
-
-		;
 
 	}
 

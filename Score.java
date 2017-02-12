@@ -3,8 +3,8 @@
 // PROJECT:          p0
 // FILE:             Score.java
 //
-// Authors: Aleysha Becker
 // Author1: (Aleysha Becker, ambecker5@wisc.edu, ambecker5, lecture 1)
+// Author2: (Michael Osmian,osmian@wisc.edu,001)
 //
 // ---------------- OTHER ASSISTANCE CREDITS 
 // Persons: NA

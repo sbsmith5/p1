@@ -5,6 +5,7 @@
 //
 // Authors: 
 // Author1: Aleysha Becker, ambecker5@wisc.edu, ambecker5, lecture 001
+// Author2: (Michael Osmian,osmian@wisc.edu,001)
 //
 // ---------------- OTHER ASSISTANCE CREDITS 
 // NA 
