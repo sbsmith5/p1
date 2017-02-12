@@ -5,7 +5,7 @@
 //FILE:             GradeEstimator.java
 //
 //Author1: (Michael Osmian,Osmian@wisc.edu,osmian,001)
-//Author2: (name2,email2,netID2,lecture number2)
+//Author2: (Sidney Smith, sbsmith5@wisc.edu, sbsmith5,lecture 001)
 //Author3: (Aleysha Becker, ambecker5@wisc.edu, ambecker5, lecture 1)
 //
 //---------------- OTHER ASSISTANCE CREDITS 
@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * (This class creates a GradeEstimator instance and reads from a given text
+ * This class creates a GradeEstimator instance and reads from a given text
  * file. The values it reads in are grade information which is then used by this
- * class to create an accurate grade estimate report.)
+ * class to create an accurate grade estimate report.
  * 
  * 
  * 
