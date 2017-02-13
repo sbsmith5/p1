@@ -1,14 +1,15 @@
 
 /////////////////////////////////////////////////////////////////////////////
-//Semester:         CS367 Spring 2016 
+//Semester:         CS367 Spring 2016
 //PROJECT:          p1
 //FILE:             GradeEstimator.java
 //
 //Author1: (Michael Osmian,Osmian@wisc.edu,osmian,001)
 //Author2: (Sidney Smith, sbsmith5@wisc.edu, sbsmith5,lecture 001)
 //Author3: (Aleysha Becker, ambecker5@wisc.edu, ambecker5, lecture 1)
+//Author4: (Vanessa Chavez, vchavez2@wisc.edu, vchavez2, lecture 001)
 //
-//---------------- OTHER ASSISTANCE CREDITS 
+//---------------- OTHER ASSISTANCE CREDITS
 //Persons: N/A
 //
 //Online sources: N/A
@@ -23,9 +24,9 @@ import java.util.Scanner;
  * This class creates a GradeEstimator instance and reads from a given text
  * file. The values it reads in are grade information which is then used by this
  * class to create an accurate grade estimate report.
- * 
- * 
- * 
+ *
+ *
+ *
  * @author Michael Osmian
  */
 public class GradeEstimator {
@@ -54,7 +55,7 @@ public class GradeEstimator {
 	 * the file, should be stored in private fields of the new GradeEstimator
 	 * instance. The method returns a reference to the newly constructed
 	 * instance.
-	 * 
+	 *
 	 * @param (String
 	 *            gradeInfo) (The name of the file which is passed into the main
 	 *            method through the command line)
@@ -178,8 +179,8 @@ public class GradeEstimator {
 	/**
 	 * This method takes a string input which is the scanner's current line and
 	 * edits it to get rid of potential characters and extra spaces.
-	 * 
-	 * 
+	 *
+	 *
 	 * @param (String
 	 *            Line) (The line being passed in)
 	 * @return (String Line) (The trimmed and edited line)
@@ -197,7 +198,7 @@ public class GradeEstimator {
 	/**
 	 * This method constructs a String to display the weighted percentage and
 	 * letter grade estimates based on the input from the grade info file.
-	 * 
+	 *
 	 * @return (String estimateReport) (The String which includes the entire
 	 *         estimateReport)
 	 */
@@ -237,7 +238,7 @@ public class GradeEstimator {
 		}
 		estimateReport = estimateReport + "--------------------------------\n";
 		estimateReport = estimateReport + String.format("%7.2f", entireAverage) + "% weighted percent\n";
-		
+
 		boolean getLetter = false;
 		while (!getLetter) {
 			for (int j = 0; j < thresholds.length; j++) {
@@ -260,7 +261,7 @@ public class GradeEstimator {
 	/**
 	 * This is the main method of the class, it calls two methods which read
 	 * from a file and create a grade estimate report from it as well.
-	 * 
+	 *
 	 * @param (String[]
 	 *            args) (The file input)
 	 */
